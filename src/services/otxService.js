@@ -1,8 +1,17 @@
 import axios from "axios";
 import constants from "../constants.js";
 import { config } from "dotenv";
+import protobuf from "protobufjs";
+import path from "path";
 
 config();
+
+let SecurityAlertList;
+
+protobuf.load(path.resolve(constants.__dirname, './schema/security_alert.proto'))
+	.then(root => {
+		SecurityAlertList = root.lookupType("security.SecurityAlertList");
+	})
 
 const OTX_API_URL = constants.otx.OTX_API_URL;
 const subscrbed_pulses = constants.otx.pulses.subscribed;
@@ -69,4 +78,17 @@ export function normalizeOTXData(data) {
 			evidences,
 		}
 	})
+}
+
+export function createBufferFromNormalizedData(response) {
+	const errorMessage = SecurityAlertList.verify(response);
+	if (errorMessage) {
+		console.log(errorMessage)
+		throw new Error(errorMessage)
+	}
+
+	const message = SecurityAlertList.create({ alerts: response });
+	const buffer = SecurityAlertList.encode(message).finish();
+
+	return buffer;
 }

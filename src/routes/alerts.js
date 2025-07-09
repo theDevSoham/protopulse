@@ -1,18 +1,7 @@
 import express from "express";
-import protobuf from "protobufjs";
-import path from "path";
-import { fetchOTXPulses, normalizeOTXData } from "../services/otxService.js";
-import { fileURLToPath } from "url";
+import { createBufferFromNormalizedData, fetchOTXPulses, normalizeOTXData } from "../services/otxService.js";
 
 const router = express.Router();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-let SecurityAlertList;
-
-protobuf.load(path.resolve(__dirname, '../schema/security_alert.proto'))
-	.then(root => {
-		SecurityAlertList = root.lookupType("security.SecurityAlertList");
-	})
 
 router.get("/json", async (req, res) => {
 
@@ -43,17 +32,7 @@ router.get("/proto", async (req, res) => {
 		const data = await fetchOTXPulses(page);
 		const response = normalizeOTXData(data);
 
-		const errorMessage = SecurityAlertList.verify(response);
-		if (errorMessage) {
-			console.log(errorMessage)
-			throw new Error(errorMessage)
-		}
-
-		const message = SecurityAlertList.create({ alerts: response });
-		console.log(message)
-		const buffer = SecurityAlertList.encode(message).finish();
-
-		console.log(buffer.toString("hex"))
+		const buffer = createBufferFromNormalizedData(response)
 
 		return res
 			.setHeader('Content-Type', 'application/x-protobuf')

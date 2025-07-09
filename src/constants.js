@@ -1,3 +1,6 @@
+import path from "path";
+import { fileURLToPath } from "url";
+
 export default {
 	otx: {
 		OTX_API_URL: "https://otx.alienvault.com/api/v1",
@@ -44,5 +47,6 @@ export default {
 	evidence_type_mapper: {
 		domain: "URLEvidence",
 		hostname: "URLEvidence",
-	}
+	},
+	__dirname: path.dirname(fileURLToPath(import.meta.url)),
 }
