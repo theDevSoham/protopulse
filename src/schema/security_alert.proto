@@ -1,0 +1,48 @@
+syntax = "proto3";
+// import "google/protobuf/timestamp.proto";
+
+package security;
+
+message SecurityAlertList {
+  repeated SecurityAlert alerts = 1;
+}
+
+message SecurityAlert {
+	string source = 1;
+	string pulse_id = 2;
+	string title = 3;
+	repeated string tags = 4;
+	string creation_time = 5;
+	repeated SecurityEvidence evidences = 6;
+}
+
+message SecurityEvidence {
+  oneof evidence {
+    IPEvidence ip_evidence = 1;
+    URLEvidence url_evidence = 2;
+    HashEvidence hash_evidence = 3;
+    EmailEvidence email_evidence = 4;
+  }
+}
+
+message IPEvidence {
+  string ip_address = 1;
+  string type = 2;
+  string source = 3;
+}
+
+message URLEvidence {
+  string url = 1;
+  string domain = 2;
+  string category = 3;
+}
+
+message HashEvidence {
+  string hash = 1;
+  string hash_type = 2;
+}
+
+message EmailEvidence {
+  string email_address = 1;
+  bool is_malicious = 2;
+}
