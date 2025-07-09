@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #333;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .json {
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1><%= title %></h1>
+
+  <!-- JSON Table -->
+  <h2>Raw JSON Data</h2>
+  <table>
+    <thead>
+      <tr>
+        <% Object.keys(jsonData[0]).forEach(key => { %>
+          <th><%= key %></th>
+        <% }) %>
+      </tr>
+    </thead>
+    <tbody>
+      <% jsonData.forEach(item => { %>
+        <tr>
+          <% Object.values(item).forEach(value => { %>
+            <td class="<%= typeof value === 'object' ? 'json' : '' %>">
+              <%= typeof value === 'object' ? JSON.stringify(value, null, 2) : value %>
+            </td>
+          <% }) %>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <!-- Protobuf Table -->
+  <!-- <h2>Decoded Protobuf Data</h2>
+  <table>
+    <thead>
+      <tr>
+        <% Object.keys(decodedProtobuf).forEach(key => { %>
+          <th><%= key %></th>
+        <% }) %>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <% Object.values(decodedProtobuf).forEach(value => { %>
+          <td class="<%= typeof value === 'object' ? 'json' : '' %>">
+            <%= typeof value === 'object' ? JSON.stringify(value, null, 2) : value %>
+          </td>
+        <% }) %>
+      </tr>
+    </tbody>
+  </table> -->
+</body>
+</html>
